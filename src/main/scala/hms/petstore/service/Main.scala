@@ -16,7 +16,7 @@ package hms.petstore.service
 
 import com.mongodb.casbah.Imports
 import com.mongodb.casbah.Imports._
-import hms.petstore.domain.{Pet, PetParams, category, tagd}
+import hms.petstore.domain.{PetParams, tagd, category, Pet}
 import hms.petstore.repo.PetDAO
 
 object Main extends App {

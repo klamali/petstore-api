@@ -17,8 +17,8 @@ package hms.petstore.repo
 import com.mongodb.casbah.Imports._
 import com.novus.salat.dao.SalatDAO
 import com.novus.salat.global._
-import hms.petstore.domain.Pet
 import Pet
+import hms.petstore.domain.Pet
 
 
 object PetDAO
