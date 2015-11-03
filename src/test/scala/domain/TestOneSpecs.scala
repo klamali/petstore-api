@@ -14,10 +14,13 @@
 
 package domain
 
+import hms.petstore.domain.{tagd, PetParams}
+import hms.petstore.repo.PetDAO
+import hms.petstore.domain.tagd
+import hms.petstore.service.Main
 import org.bson.types.ObjectId
 import org.specs.SpecificationWithJUnit
-import repo.PetDAO
-import service.Main.{create,read,delete,update}
+import Main.{create,read,delete,update}
 
 class TestOneSpecs extends SpecificationWithJUnit {
 
