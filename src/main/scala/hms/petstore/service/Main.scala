@@ -16,8 +16,8 @@ package hms.petstore.service
 
 import com.mongodb.casbah.Imports
 import com.mongodb.casbah.Imports._
-import hms.petstore.domain.{PetParams, tagd, category, Pet}
-import hms.petstore.repo.PetDAO
+import hms.petstore.domain.{petParams, tagd, category, Pet}
+import hms.petstore.repo.petDAO
 
 object Main extends App {
 
@@ -30,7 +30,7 @@ object Main extends App {
       case 2 => c2
     }
     val p = Pet(name = n, status = s, category = cat, photo_urls = p_urls, tags = tagz)
-    val id = PetDAO.insert(p)
+    val id = petDAO.insert(p)
     println("Inserted id:" + id)
     (id,p)
   }
@@ -42,7 +42,7 @@ object Main extends App {
     null
   }
 
-  def update(s:PetParams, p:Pet): Pet ={
+  def update(s:petParams, p:Pet): Pet ={
     println(s)
     println(p)
    // val c=PetDAO.update(s,p)
@@ -51,7 +51,7 @@ object Main extends App {
   }
 
   def delete(id: ObjectId) = {
-    PetDAO.removeById(id)
+    petDAO.removeById(id)
   }
 
 
