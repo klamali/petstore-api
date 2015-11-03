@@ -17,7 +17,6 @@ import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import com.novus.salat.global._
 import hms.petstore.domain.{PetParams, Pet}
-import hms.petstore.service.domain.Pet
 import scala.language.implicitConversions
 
 object Conversions {
