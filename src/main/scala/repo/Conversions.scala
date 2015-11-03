@@ -11,7 +11,6 @@
  *   property rights in these materials.
  *
  */
-
 package repo
 
 import com.mongodb.casbah.Imports._

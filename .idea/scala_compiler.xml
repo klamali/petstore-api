@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="Maven 1" modules="word_count,pet_rest" />
+    <profile name="Maven 1" modules="pet_rest,word_count" />
   </component>
 </project>
