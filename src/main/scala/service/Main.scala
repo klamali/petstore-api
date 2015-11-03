@@ -57,8 +57,6 @@ val c2=category(2,"cat")
   //    println("Converted DBObject:" + dbo)
 
 
-
-
 //  def find(n:String)
 
   }
