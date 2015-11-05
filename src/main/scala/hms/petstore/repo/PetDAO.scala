@@ -17,12 +17,10 @@ package hms.petstore.repo
 import com.mongodb.casbah.Imports._
 import com.novus.salat.dao.SalatDAO
 import com.novus.salat.global._
-import Pet
 import hms.petstore.domain.Pet
 
-
 object PetDAO
-  extends SalatDAO[Pet, ObjectId](collection = MongoConnection()("salat_test")("pet"))
+extends SalatDAO[Pet, ObjectId](collection = MongoConnection()("salat_test")("pet"))
 
 
 

@@ -16,42 +16,41 @@ package hms.petstore.service
 
 import com.mongodb.casbah.Imports
 import com.mongodb.casbah.Imports._
-import hms.petstore.domain.{petParams, tagd, category, Pet}
-import hms.petstore.repo.petDAO
+import hms.petstore.domain._
+import hms.petstore.repo.{Conversions, PetDAO}
 
-object Main extends App {
 
-  val c1 = category(1, "dog")
-  val c2 = category(2, "cat")
+object PetStore extends App {
 
-  def create(n: String, s: String, c: Int, p_urls: Array[String], tagz: Array[tagd]): (Option[Imports.ObjectId],Pet) = {
+  val c1 = Category(1, "dog")
+  val c2 = Category(2, "cat")
+
+  def create(n: String, s: String, c: Int, p_urls: Array[String], tagz: Array[Tagd]): Option[Imports.ObjectId] = {
     val cat = c match {
       case 1 => c1
       case 2 => c2
     }
     val p = Pet(name = n, status = s, category = cat, photo_urls = p_urls, tags = tagz)
-    val id = petDAO.insert(p)
+    val id = PetDAO.insert(p)
     println("Inserted id:" + id)
-    (id,p)
+    id
   }
 
-  def read(id: ObjectId): Option[Pet] = {
-   // val getResult = PetDAO.findOneById(id)
-   // println(getResult)
-   // getResult
-    null
+  def read(a: ObjectId): Option[Pet] = {
+    val b = PetDAO.findOneById(a)
+    b
   }
 
-  def update(s:petParams, p:Pet): Pet ={
-    println(s)
-    println(p)
-   // val c=PetDAO.update(s,p)
-    //c
-    null
+  def update(a: PetParams, b: Pet): Imports.WriteResult = {
+
+    val params_obj = Conversions.paramsToDBObject(a)
+    val pet_obj = Conversions.petToDBObject(b)
+    val t=PetDAO.update(params_obj, pet_obj, false, false, WriteConcern.Safe)
+    t
   }
 
   def delete(id: ObjectId) = {
-    petDAO.removeById(id)
+    PetDAO.removeById(id)
   }
 
 

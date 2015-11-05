@@ -16,16 +16,9 @@ package hms.petstore.domain
 
 import com.mongodb.casbah.Imports.ObjectId
 
+case class Pet(_id: ObjectId = new ObjectId,name: String,status: String,category: Category,photo_urls: Array[String],
+               tags: Array[Tagd])
 
-case class Pet(_id: ObjectId = new ObjectId,
-               name: String,
-               status: String,
-               category: category,
-               photo_urls: Array[String],
-               tags: Array[tagd]
+case class Category(_id: Int, name: String)
 
-                )
-
-case class category(_id: Int, name: String)
-
-case class tagd(_id: Int, name: String)
+case class Tagd(_id: Int, name: String)

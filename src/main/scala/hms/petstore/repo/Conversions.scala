@@ -16,13 +16,10 @@ package hms.petstore.repo
 import com.mongodb.casbah.Imports._
 import com.novus.salat._
 import com.novus.salat.global._
-import hms.petstore.domain.{PetParams, Pet}
+import hms.petstore.domain.{PetParams,Pet}
 import scala.language.implicitConversions
 
 object Conversions {
-  implicit def paramsToDBObject(params: PetParams): DBObject =
-    grater[PetParams].asDBObject(params)
-
-  implicit def petToDBObject(c: Pet): DBObject =
-    grater[Pet].asDBObject(c)
+  implicit def paramsToDBObject(params: PetParams): DBObject =    grater[PetParams].asDBObject(params)
+  implicit def petToDBObject(c: Pet): DBObject =    grater[Pet].asDBObject(c)
 }
