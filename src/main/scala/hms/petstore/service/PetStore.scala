@@ -22,15 +22,12 @@ import hms.petstore.repo.{Conversions, PetDAO}
 
 object PetStore extends App {
 
-  val c1 = Category(1, "dog")
-  val c2 = Category(2, "cat")
 
-  def create(n: String, s: String, c: Int, p_urls: Array[String], tagz: Array[Tagd]): Option[Imports.ObjectId] = {
-    val cat = c match {
-      case 1 => c1
-      case 2 => c2
-    }
-    val p = Pet(name = n, status = s, category = cat, photo_urls = p_urls, tags = tagz)
+
+  def create(n: String, s: String, c:Category,p_urls: List[String], tagz: List[Tagd]): Option[Imports.ObjectId] = {
+
+
+    val p = Pet(name = n, status = s, category = c, photo_urls = p_urls, tags = tagz)
     val id = PetDAO.insert(p)
     println("Inserted id:" + id)
     id
@@ -41,15 +38,15 @@ object PetStore extends App {
     b
   }
 
-  def update(a: PetParams, b: Pet): Imports.WriteResult = {
+  implicit def update(a: PetParams, b: Pet): Imports.WriteResult = {
 
     val params_obj = Conversions.paramsToDBObject(a)
     val pet_obj = Conversions.petToDBObject(b)
-    val t=PetDAO.update(params_obj, pet_obj, false, false, WriteConcern.Safe)
+    val t=PetDAO.update(params_obj, pet_obj,upsert=false, multi=false, WriteConcern.Safe)
     t
   }
 
-  def delete(id: ObjectId) = {
+  def delete(id: ObjectId):Unit = {
     PetDAO.removeById(id)
   }
 

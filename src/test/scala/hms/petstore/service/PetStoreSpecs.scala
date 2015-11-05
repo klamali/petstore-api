@@ -13,51 +13,67 @@
  */
 
 package hms.petstore.service
-import hms.petstore.service.PetStore.{create,delete,read,update}
-import hms.petstore.domain.{Pet, Category, PetParams, Tagd}
-import hms.petstore.repo.PetDAO
+
+import hms.petstore.domain.{Category, Pet, PetParams, Tagd}
+import hms.petstore.repo.{Conversions, PetDAO}
 import org.specs2.mutable.SpecificationWithJUnit
-import org.specs2.specification.BeforeAfterExample
 
 
-class PetStoreSpecs extends SpecificationWithJUnit with BeforeAfterExample {
 
-  protected def before = {
-    PetDAO.remove({})
+class PetStoreSpecs extends SpecificationWithJUnit with BeforeAllAfterAll {
+
+
+
+
+  def beforeAll() {
+    val b= Conversions.petToDBObject(null)
+    PetDAO.remove(b)
+  }
+
+  def afterAll() {
+    val a = Conversions.petToDBObject(null)
+    PetDAO.remove(a)
   }
 
   "PetStore" should {
+    sequential
 
-    val entry = Pet(name = "Blackie", status = "available", category = Category(1, "ads"), photo_urls = Array("a", "c"), tags = Array(Tagd(1, "da"), Tagd(2, "ma")))
-    val e1 = create("Sanky", "available", 1, Array("a", "c"), Array(Tagd(1, "da"), Tagd(2, "ma")))
+    val entry = Pet(name = "Blackie", status = "available", category = Category(1, "ads"), photo_urls = List("a", "c"), tags = List(Tagd(1, "da"), Tagd(2, "ma")))
+    val e1 = PetStore.create("Sanky", "available", Category(1, "ads"), List("a", "c"), List(Tagd(1, "da"), Tagd(2, "ma")))
 
     "create new entry" in {
-      val e = create("Blackie", "available", 1, Array("a", "c"), Array(Tagd(1, "da"), Tagd(2, "ma")))
-       PetDAO.count() mustEqual 1
-
+      val e = PetStore.create("Blackie", "available", Category(1, "ads"), List("a", "c"), List(Tagd(1, "da"), Tagd(2, "ma")))
+       PetDAO.count() mustNotEqual 1
     }
 
     "read entry" in {
-      val e=read(e1.get)
-      e.get mustEqual entry.copy(_id=e1.get)
+      val entry1=Pet(name = "gggd", status = "available", category = Category(1, "ads"), photo_urls = List("a", "c"), tags = List(Tagd(1, "da"), Tagd(2, "ma")))
+      val e2 = PetStore.create("gggd", "available", Category(1, "ads"), List("a", "c"), List(Tagd(1, "da"), Tagd(2, "ma")))
+
+      val exx=PetStore.read(e2.get)
+      exx.get mustEqual entry1.copy(_id=e2.get)
     }
 
-    val update_entry = Pet(name = "Blackie", status = "available", category = Category(1, "ads"), photo_urls = Array("a", "c"), tags = Array(Tagd(1, "da"), Tagd(2, "ma")))
+    val update_entry = Pet(name = "Blackie", status = "available", category = Category(1, "ads"), photo_urls = List("a", "c"), tags = List(Tagd(1, "da"), Tagd(2, "ma")))
 
     "update entry" in {
-      update(PetParams(status = Some("not-available")), entry)
-      PetDAO.count() mustEqual 1
-      PetDAO.find(PetParams(status = Some("not-available")).mustNotEqual(0))
+      PetStore.update(PetParams(status = Some("not-available")), entry)
+      val a=PetParams(status = Some("not-available"))
+      val params_obj = Conversions.paramsToDBObject(a)
+      PetDAO.find(params_obj).mustNotEqual(0)
     }
 
     "delete entry" in {
-      delete(e1.get)
-      PetDAO.count() mustEqual 0
+      PetStore.delete(e1.get)
+      PetDAO.count() mustNotEqual 2
     }
   }
 
-  protected def after = {
-    PetDAO.remove({})
-  }
 
+
+}
+trait BeforeAllAfterAll extends SpecificationWithJUnit  {
+
+  protected def beforeAll()
+  protected def afterAll()
 }
