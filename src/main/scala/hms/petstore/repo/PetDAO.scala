@@ -20,7 +20,7 @@ import com.novus.salat.global._
 import hms.petstore.domain.Pet
 
 object PetDAO
-extends SalatDAO[Pet, ObjectId](collection = MongoConnection()("salat_test")("pet"))
+extends SalatDAO[Pet, ObjectId](collection = MongoConnection()("salat_test")("peti"))
 
 
 

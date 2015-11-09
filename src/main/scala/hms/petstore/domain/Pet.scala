@@ -13,12 +13,10 @@
  */
 
 package hms.petstore.domain
-
-import com.mongodb.casbah.Imports.ObjectId
-
-case class Pet(_id: ObjectId = new ObjectId, name: String, status: String, category: Category, photo_urls: List[String],
+ case class Pet(id: Int, name: String, status: String, category: Category, photoUrls: List[String],
                tags: List[Tagd])
 
-case class Category(_id: Int, name: String)
+case class Category(id: Int, name: String)
 
-case class Tagd(_id: Int, name: String)
+case class Tagd(id: Int, name: String)
+

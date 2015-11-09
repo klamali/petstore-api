@@ -14,10 +14,8 @@
 
 package hms.petstore.domain
 
-import com.mongodb.casbah.Imports.ObjectId
-
-case class PetParams(_id: Option[ObjectId] = None, name: Option[String] = None,status: Option[String] = None,
-                     category: Option[Category] = None,photo_urls: Option[List[String]] = None,
-                     tags: Option[List[Tagd]] = None)
+case class PetParams(id: Option[Int] = None, name: Option[String] = None,status: Option[String] = None,
+                     category: Option[Category] = None,photoUrls: List[String] = List.empty,
+                     tags: List[Tagd] = List.empty)
 
 
