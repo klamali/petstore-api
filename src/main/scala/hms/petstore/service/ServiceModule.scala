@@ -16,7 +16,7 @@ package hms.petstore.service
 
 import com.escalatesoft.subcut.inject.NewBindingModule
 
-object ServiceConfigurations extends NewBindingModule (module => {
+object ServiceModule extends NewBindingModule (module => {
 
   import module._
 
