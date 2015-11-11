@@ -11,27 +11,23 @@
  *   property rights in these materials.
  *
  */
-
-
-import hms.petstore.repo.{Conversions, PetDAO}
+package hms.petstore.service
+import com.mongodb.casbah.Imports._
+import hms.petstore.repo.PetDAO
 import org.specs2.mutable.SpecificationWithJUnit
 
-class PetStoreSpecs extends SpecificationWithJUnit with BeforeAllAfterAll {
-
-
-
+class  PetStoreSpecs extends SpecificationWithJUnit with BeforeAllAfterAll {
 
   def beforeAll() {
-    val b= Conversions.petToDBObject(null)
-    PetDAO.remove(b)
+    PetDAO.remove(DBObject.empty)
   }
 
   def afterAll() {
-    val a = Conversions.petToDBObject(null)
-    PetDAO.remove(a)
+    PetDAO.remove(DBObject.empty)
   }
 
   /*
+
   "PetStore" should {
     sequential
 
@@ -66,11 +62,9 @@ class PetStoreSpecs extends SpecificationWithJUnit with BeforeAllAfterAll {
     }
   }
 */
-
-
 }
-trait BeforeAllAfterAll extends SpecificationWithJUnit  {
 
+trait BeforeAllAfterAll extends SpecificationWithJUnit  {
   protected def beforeAll()
   protected def afterAll()
 }
