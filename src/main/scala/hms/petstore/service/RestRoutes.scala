@@ -17,7 +17,7 @@ package hms.petstore.service
 import akka.actor.{Actor, ActorLogging}
 import com.escalatesoft.subcut.inject.{BindingModule, Injectable}
 import hms.petstore.domain.{Category, Pet, Tagd}
-import spray.http.MediaTypes
+import spray.http.{HttpHeaders, MediaTypes}
 import spray.httpx.SprayJsonSupport
 import spray.json._
 import spray.routing.HttpService
@@ -40,74 +40,95 @@ class PetStoreActor(implicit val bindingModule: BindingModule) extends Actor wit
 }
 
 
-  trait RestRoutes extends HttpService with PetStoreProtocol with Injectable {
+trait RestRoutes extends HttpService with PetStoreProtocol with Injectable {
 
-    lazy val serviceRest = inject[PetStore]
+  lazy val serviceRest = inject[PetStore]
 
-    val route=
+  val AccessControlAllowMethodsAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE"
+  )
+  val AccessControlAllowAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Origin", "*"
+  )
+  val AccessControlAllowHeadersAll = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Cache-Control, Pragma,X-Custom-Header"
+  )
+
+  val AccessControlAllowCredentialsTrue = HttpHeaders.RawHeader(
+    "Access-Control-Allow-Credentials", "true"
+  )
+
+  val route = {
+    respondWithHeaders(AccessControlAllowAll, AccessControlAllowHeadersAll, AccessControlAllowMethodsAll, AccessControlAllowCredentialsTrue) {
       path("pet") {
         post {
-          respondWithMediaType(MediaTypes.`application/json`)
           entity(as[Pet]) {
             p =>
               complete(serviceRest.postpet(p))
           }
         } ~
-        put {
+          put {
+            //respondWithMediaType(MediaTypes.`application/json`)
+            entity(as[Pet]) {
+              p =>
+                complete(serviceRest.updatepet(p))
+            }
+          } ~
+          options {
+            complete("OK")
+          }
+      } ~
+        path("pet" / Segment) {
+          e => {
+            delete {
+              complete {
+                serviceRest.deleteByid(e.toString.toInt)
+              }
+            } ~
+              get {
+                complete {
+                  respondWithMediaType(MediaTypes.`application/json`)
+                  serviceRest.findByid(e.toString.toInt)
+                }
+              } ~
+              post {
+                entity(as[Pet]) { p =>
+                  complete {
+                    val id = e.toString.toInt
+                    serviceRest.updateWithid(id, p)
+                  }
+                }
+              } ~
+              options {
+                complete("OK")
+              }
+          }
+        } ~
+        path("pet" / Segment / "uploadImage") {
+          i =>
+            post {
+              parameter('image_url.as[String]) { i_url =>
+                complete {
+                  val id = i.toString.toInt
+                  serviceRest.addUrltoId(id, i_url)
+                }
+              }
+            }
+        } ~
+        path("pet" / "findByStatus") {
           respondWithMediaType(MediaTypes.`application/json`)
-          entity(as[Pet]) {
-            p =>
-              complete(serviceRest.updatepet(p))
+          parameters('status.as[String]) {
+            status =>
+              complete(serviceRest.findByStatus(status))
+          }
+        } ~
+        path("pet" / "findByTags") {
+          respondWithMediaType(MediaTypes.`application/json`)
+          parameters('tags.as[String]) {
+            tags =>
+              complete(serviceRest.findByTags(tags))
           }
         }
-      } ~
-      path("pet" / Segment) {
-        e => {
-          delete {
-            complete {
-              serviceRest.deleteByid(e.toString.toInt)
-            }
-          } ~
-          get {
-            complete {
-              respondWithMediaType(MediaTypes.`application/json`)
-              serviceRest.findByid(e.toString.toInt)
-            }
-          } ~
-          post {
-            entity(as[Pet]) { p =>
-              complete {
-                val id = e.toString.toInt
-                serviceRest.updateWithid(id, p)
-              }
-            }
-          }
-        }
-      } ~
-      path("pet" / Segment / "uploadImage") {
-        i =>
-          post {
-            parameter('image_url.as[String]) { i_url =>
-              complete {
-                val id = i.toString.toInt
-                serviceRest.addUrltoId(id, i_url)
-              }
-            }
-          }
-      } ~
-      path("pet" / "findByStatus") {
-        respondWithMediaType(MediaTypes.`application/json`)
-        parameters('status.as[String]) {
-          status =>
-            complete(serviceRest.findByStatus(status))
-        }
-      } ~
-      path("pet" / "findByTags") {
-        respondWithMediaType(MediaTypes.`application/json`)
-        parameters('tags.as[String]) {
-          tags =>
-            complete(serviceRest.findByTags(tags))
-        }
-      }
-
+    }
+  }
 }
